@@ -75,6 +75,7 @@ data "aws_vpc" "vpc" {
     name   = "tag:Name"
     values = ["x-ops-vpc"]
   }
+}
 
 data "aws_security_group" "public_sg" {
   filter {
