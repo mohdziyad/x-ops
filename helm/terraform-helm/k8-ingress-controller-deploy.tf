@@ -21,7 +21,7 @@ module "alb_security_group" {
   version = "~> 4"
 
   name   = "alb-sg"
-  vpc_id = module.vpc.vpc_id
+  vpc_id = data.aws_vpc.vpc.id
 
   # ingress
   ingress_cidr_blocks = ["0.0.0.0/0"]
@@ -69,6 +69,12 @@ data "aws_db_instance" "database" {
   db_instance_identifier = "x-ops-rds"
   provider               = aws
 }
+
+data "aws_vpc" "vpc" {
+  filter {
+    name   = "tag:Name"
+    values = ["x-ops-vpc"]
+  }
 
 data "aws_security_group" "public_sg" {
   filter {
