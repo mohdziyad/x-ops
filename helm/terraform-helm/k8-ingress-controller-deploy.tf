@@ -17,9 +17,6 @@ resource "helm_release" "alb_ingress_controller_deploy" {
 }
 
 module "alb_security_group" {
-  providers = {
-    name = "aws"
-   }
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4"
 
