@@ -1,0 +1,71 @@
+# Create a Kubernetes service account named alb-ingress-controller in the kube-system namespace, a cluster role, and a cluster role binding for the ALB Ingress Controller
+
+# Service Account
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: alb-ingress-controller
+  labels:
+    app.kubernetes.io/name: alb-ingress-controller
+  namespace: kube-system
+  annotations:
+    eks.amazonaws.com/role-arn: {{ .Values.serviceAccount.iamrole}}
+---
+# Cluster Role
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: alb-ingress-controller
+  labels:
+    app.kubernetes.io/name: alb-ingress-controller
+rules:
+  - apiGroups:
+      - ""
+      - extensions
+    resources:
+      - configmaps
+      - endpoints
+      - events
+      - ingresses
+      - ingresses/status
+      - services
+      - pods/status
+    verbs:
+      - create
+      - get
+      - list
+      - update
+      - watch
+      - patch
+  - apiGroups:
+      - ""
+      - extensions
+    resources:
+      - nodes
+      - pods
+      - secrets
+      - services
+      - namespaces
+    verbs:
+      - get
+      - list
+      - watch
+---
+# Cluster Role Binding
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: alb-ingress-controller
+  labels:
+    app.kubernetes.io/name: alb-ingress-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: alb-ingress-controller
+subjects:
+  - kind: ServiceAccount
+    name: alb-ingress-controller
+    namespace: kube-system

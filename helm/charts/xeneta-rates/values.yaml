@@ -1,0 +1,44 @@
+# Secrets
+
+secrets:
+  name: my-secret
+  dbpwd: pwd123
+
+nameSpace:
+  name: my-namespace
+
+nodeService:
+  name: my-service
+  port: 3000
+
+dbService:
+  name: my-db-service
+  rdsEndPoint: test.com
+
+deployment:
+  name: my-deployment
+  deployType: RollingUpdate
+  containers:
+    image: nginx:latest
+  dbUser: xeneta
+  dbName: xeneta
+  replicas: 1
+
+ingress:
+  name: my-ingress
+  albName: myalb
+  albScheme: internal
+  # albSubnets: subnet-05e8d06af36be45a9, subnet-090d0693eb471b8d1
+  albSg: sg-0fe7cdc3f46c564d8
+  listenerPort: '[{"HTTP": 80}]'
+  targetType: instance
+  protocol: HTTP
+  hcPort: traffic-port
+  hcProtocol: HTTP
+  hcPath: /
+  hcinterval: '30'
+  hctimeout: '10'
+  hchthreshold: '3'
+  hcuhthreshold: '3'
+  successCode: '200'
+

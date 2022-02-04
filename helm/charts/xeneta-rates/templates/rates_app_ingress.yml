@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.ingress.name }}
+  labels:
+    app: rates
+  namespace: rates
+  annotations:
+    kubernetes.io/ingress.class: "alb"
+    alb.ingress.kubernetes.io/load-balancer-name: {{ .Values.ingress.albName }} # specifies the custom name to use for the load balancer.
+    alb.ingress.kubernetes.io/tags: cluster=xeneria-rates,sdlc=dev # specifies additional tags that will be applied to AWS resources created.
+    alb.ingress.kubernetes.io/scheme: {{ .Values.ingress.albScheme }}
+    #alb.ingress.kubernetes.io/subnets: subnet-0bd2075189e459531, subnet-09ccf9f0b52975d4d, subnet-067b04a29b428944b
+    alb.ingress.kubernetes.io/security-groups: {{ .Values.ingress.albSg }}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/target-type:  {{ .Values.ingress.targetType }}
+    alb.ingress.kubernetes.io/backend-protocol: {{ .Values.ingress.protocol }}
+    alb.ingress.kubernetes.io/healthcheck-port: traffic-port # When using target-type: instance with a service of type "NodePort", the healthcheck port can be set to traffic-port to automatically point to the correct port.
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: '30'
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: '10'
+    alb.ingress.kubernetes.io/healthy-threshold-count: '3'
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: '3'
+    alb.ingress.kubernetes.io/success-codes: '200'
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /rates* # display data based on query string
+            backend:
+              serviceName: {{ .Values.nodeService.name }}
+              servicePort: 3000
+          - path: / # display hello world
+            backend:
+              serviceName: {{ .Values.nodeService.name }}
+              servicePort: 3000

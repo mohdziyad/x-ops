@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.nameSpace.name}}
+  labels:
+    app: rates
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: {{ .Values.deployment.name }}
+  labels:
+    app: rates
+  namespace: {{ .Values.nameSpace.name }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  strategy:
+    type: {{ .Values.deployment.deployType }}
+  selector:
+    matchLabels:
+      app: rates
+  template:
+    metadata:
+      name: rates-pod-template
+      labels:
+        app: rates
+    spec:
+      containers:
+        - name: rates-container
+          image: {{ .Values.deployment.containers.image }}
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DB_HOST
+              value: {{ .Values.dbService.name }}
+            - name: DB_USER
+              value: {{ .Values.deployment.dbUser }}
+            - name: DB_NAME
+              value: {{ .Values.deployment.dbName}}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name }}
+                  key: rates_db_password
+
+            
+            

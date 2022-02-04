@@ -1,0 +1,10 @@
+# Default Values
+
+serviceAccount:
+  iamrole: arn:aws:iam::548286011133:role/eksctl-xeneta-rates-nodegroup-xen-NodeInstanceRole-RI20LC9VDFCA
+
+deployIngress:
+  clusterName: mycluster
+
+nameSpace:
+  name: my-namespace
