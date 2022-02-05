@@ -13,7 +13,7 @@ The environment for the Python API is setup in AWS EKS. Database is RDS Postrgre
 <h1> Services and Modules usage </h1>
 
 ```sh
-For details on the AWS Services used and the deployment, please refer the Application_deployment_architecture.pptx
+For details on the AWS Services used and the deployment, please refer the Use-case-1.docx
 ```
 
 <h1>Prerequisites</h1>
