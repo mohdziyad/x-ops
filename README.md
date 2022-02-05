@@ -39,7 +39,7 @@ terraform init ; terraform plan ; terraform apply
 ```
 Build the docker image and push to ECR. Run the below shell script
 ```sh
-./database-infra-terrform/docker_image_push_to_ecr.sh
+sh docker_image_push_to_ecr.sh
 ```
 
 Deploy EKS Cluster and related resources and update kubeconfig.:
