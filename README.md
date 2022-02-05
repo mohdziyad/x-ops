@@ -1,8 +1,8 @@
 <h1>Xeneta operations task overview</h1>
 The environment for the Python API is setup in AWS EKS. Database is RDS Postrgresql 13.5 </br>
 
-<u>AWS Services and other tools used</u>
-- IaaC - Terraform
+<b>Tools usage</b>
+- IaC - Terraform
 - Containers - Docker
 - Deployment environment - Elastice Kubernetes Service
 - Database - RDS Postgresql
@@ -10,13 +10,20 @@ The environment for the Python API is setup in AWS EKS. Database is RDS Postrgre
 - Kubernetes ingress controller - ALB
 - Kubernetes Deployment - Helm
 
+<h1> Services and Modules usage </h1>
+
+```sh
+For details on the AWS Services used and the deployment, please refer the Application_deployment_architecture.pptx
+```
+
 <h1>Prerequisites</h1>
 
-Terraform version >=0.14</br>
-AWS CLI with credentials configured </br>
-Docker installation with CLI </br>
-Kubectl CLI </br>
-Linux command line </br>
+
+> Terraform version >=0.14</br>
+> AWS CLI with credentials configured </br>
+> Docker installation with CLI </br>
+> Kubectl CLI </br>
+> Linux command line </br>
 
 1) Create an SSM Parameter with name "dbpwd" and store a password for database.
 2) Base64 encode db password for use in kubernetes manifest.
