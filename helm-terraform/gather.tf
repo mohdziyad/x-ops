@@ -20,7 +20,7 @@ data "aws_vpc" "vpc" {
 data "aws_security_group" "public_sg" {
   filter {
     name   = "tag:Name"
-    values = ["bastion-sg"]
+    values = ["db-agent-sg"]
   }
   provider = aws
 }

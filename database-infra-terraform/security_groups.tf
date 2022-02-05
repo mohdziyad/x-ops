@@ -20,14 +20,14 @@ module "rds_security_group" {
   ]
 }
 
-#################################### Bastion host security group with SSH inbound ###################################
+#################################### DB Agent security group with SSH inbound ###################################
 #####################################################################################################################
 
-module "bastion_security_group" {
+module "db_agent_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4"
 
-  name   = "bastion-sg"
+  name   = "db-agent-sg"
   vpc_id = module.vpc.vpc_id
 
   # ingress

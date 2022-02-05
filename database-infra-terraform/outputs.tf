@@ -8,7 +8,7 @@ output "repository_url" {
   value       = aws_ecr_repository.xops.repository_url
 }
 
-output "bastion_host_ip" {
-  description = "Output of Bastion host IP address"
-  value       = aws_instance.bastion_host.public_ip
+output "db_agent_ip" {
+  description = "Output of DB Agent IP address"
+  value       = aws_instance.db_agent.public_ip
 }
