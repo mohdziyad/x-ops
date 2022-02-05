@@ -1,9 +1,3 @@
-#serviceAccount:
-#  iamrole: arn:aws:iam::548286011133:role/eksctl-xeneta-rates-nodegroup-xen-NodeInstanceRole-RI20LC9VDFCA
-
-#deployIngress:
-#  clusterName: xeneta-rates
-
 nameSpace:
   name: rates
 
@@ -17,12 +11,9 @@ nodeService:
 
 dbService:
   name: rates-db-service
-#  rdsEndPoint: xeneta-rates.cwatgephvnv6.us-east-1.rds.amazonaws.com
 
 deployment:
   name: rates-deployment
-  #containers:
-#    image: 041096/ratesoperations:1.0.0
   dbUser: postgres
   dbName: rates
   replicas: 3
@@ -31,8 +22,6 @@ ingress:
   name: xeneta-rates-service
   albName: xeneta-rates-alb
   albScheme: internet-facing
-  #albSubnets: subnet-05e8d06af36be45a9, subnet-090d0693eb471b8d1
-  #albSg: sg-0fe7cdc3f46c564d8
   listenerPort: '[{"HTTP": 80}]'
   targetType: instance
   protocol: HTTP

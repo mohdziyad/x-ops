@@ -1,21 +1,3 @@
-module "alb_ingress" {
-  source           = "./modules/terraform-aws-iam"
-  cluster_name     = "x-ops-eks-2022"
-  role_name        = "alb-ingress"
-  service_accounts = ["kube-system/alb-ingress-controller"]
-  policies         = [data.aws_iam_policy_document.alb_ingress.json]
-}
-
-resource "aws_eks_identity_provider_config" "this" {
-  cluster_name = module.eks.cluster_id
-
-  oidc {
-    client_id                     = "sts.amazonaws.com"
-    issuer_url                    = module.eks.cluster_oidc_issuer_url
-    identity_provider_config_name = "oidc_xops"
-  }
-}
-
 data "aws_iam_policy_document" "alb_ingress" {
   statement {
     effect = "Allow"

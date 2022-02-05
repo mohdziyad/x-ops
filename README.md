@@ -5,7 +5,7 @@ The environment for the Python API is setup in AWS EKS in us-east-2 region. Data
 - IaaC - Terraform
 - Containers - Docker
 - Deployment environment - Elastice Kubernetes Service
-- Database - RDS Postgresql 
+- Database - RDS Postgresql
 - RDS Data load - via Bastion host since RDS is in private subnet
 - Kubernetes ingress controller - ALB
 
@@ -18,38 +18,51 @@ Kubectl CLI
 1) Create a key pair in AWS
 2) Create an SSM Parameter with name "dbpwd" and store a password for database.
 3) Base64 encode db password for use in kubernetes manifest.
-4) Move the pem file database-infra-terraform directory for bastion host access for copying the sql file
-5) Move .kube directory to eks-cluster-terraform directory
+4) Move the pem file to database-infra-terraform directory for bastion host access for copying the sql file
+5) Move .kube directory to eks-cluster-terraform directory for helm authentication.
 6) Clone the GIT repo
 
 <h1>Installation Steps</h1> </br>
 
-1) Deploy VPC, Database, Bastion Host to load data and ECR repository
-- cd database-infra-terraform </br>
-- terraform init </br>
-- terraform plan </br>
-- terraform apply </br>
+(Use Linux command line like GIT bash to execute the commands)</br>
+Deploy VPC, Database, Bastion Host to load data and ECR repository
+```sh
+cd database-infra-terraform
+terraform init ; terraform plan ; terraform apply
+```
 
-2) ssh to bastion  host (get the ip from output) and load the db using following command
-- psql -h rds_address_name -U postgres -d rates < /tmp/rates.sql 
+ssh to bastion  host and load the db:
+```sh
+ssh -i yourpem.pem ec2-user@$(terraform output -raw bastion_host_ip)
+psql -h rds_address -U postgres -d rates < /tmp/rates.sql
+```
+(Enter the db password when prompted)
 
-3) Build the docker image and push to ECR. Execute the following commands
+Build the docker image and push to ECR. Execute the following commands
+```sh
+aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin $(terraform output -raw repository_url | sed 's/x-ops-repo$//')
+docker build -t x-ops-repo ../.
+docker tag x-ops-repo:1.0 $(terraform output -raw repository_url):1.0
+docker push $(terraform output -raw repository_url):1.0
+```
 
-- aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin accountnumber.dkr.ecr.us-east-2.amazonaws.com </br>
+Deploy EKS Cluster and related resources and update kubeconfig:
+```sh
+cd eks-cluster-terraform
+terraform init; terraform plan; terraform apply
+aws eks --region us-east-2 update-kubeconfig --name $(terraform output -raw cluster_name)
+```
 
-- docker build -t x-ops-repo:1.0 .
-- docker tag x-ops-repo:1.0 accountnumber.dkr.ecr.us-east-2.amazonaws.com/x-ops-repo:1.0
-- docker push accountnumber.dkr.ecr.us-east-2.amazonaws.com/x-ops-repo:latest
+Deploy Configuration in EKS Cluster using helm terraform:</br>
+```sh
+cd helm-terraform
+```
+Make sure .kube directory is upto date with updated kubeconfig.</br>
+Put the base64 encoded password into line number #6 (dbpwd) of values.yml
+```sh
+terraform init; terraform plan; terraform apply
+```
 
-4) Deploy EKS Cluster and related resources:
-- cd eks-cluster-terraform
-- terraform init, plan and apply
-
-5) Deploy Configuration in EKS Cluster using helm terraform
-- cd helm/terraform-helm
-- Put the base64 encoded password into line number #12 of alb_ingress_controller_custom_values.yml
-- terraform init, plan and apply
-
-6) Verify the application.
-- kubectl get ingress -n rates (Check the hostname in the output)
-- Goto browser and access application using alb dns name (<b>http://dnsname/rates?date_from=2021-01-01&date_to=2021-01-31&orig_code=CNGGZ&dest_code=EETLL</b>)
+Verify the application.</br>
+- kubectl get ingress -n rates (Check the hostname in the output) </br>
+- After few minutes (Once the ALB becomes "Active"), Goto browser and access application using alb dns name: (<b>http://albdnsname/rates?date_from=2021-01-01&date_to=2021-01-31&orig_code=CNGGZ&dest_code=EETLL</b>)
