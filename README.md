@@ -70,3 +70,10 @@ terraform init; terraform plan; terraform apply
 Verify the application.</br>
 - kubectl get ingress -n rates (Check the hostname in the output) </br>
 - After few minutes (Once the ALB becomes "Active"), Goto browser and access application using alb dns name: (<b>http://albdnsname/rates?date_from=2021-01-01&date_to=2021-01-31&orig_code=CNGGZ&dest_code=EETLL</b>)
+
+
+<h1> Data Ingestion Pipeline </h1>
+
+```sh
+Please refer the document Use-case-2.docx
+```
