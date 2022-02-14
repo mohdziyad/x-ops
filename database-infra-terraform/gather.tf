@@ -2,9 +2,11 @@ data "aws_availability_zones" "available" {}
 
 data "aws_caller_identity" "current" {}
 
+/*
 data "aws_ssm_parameter" "dbpassword" {
   name = "dbpwd"
 }
+*/
 
 data "aws_ami" "db_agent_ami" {
   most_recent = true

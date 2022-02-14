@@ -1,5 +1,9 @@
 data "aws_caller_identity" "current" {}
 
+data "aws_ssm_parameter" "dbpassword" {
+  name = "/rds/dbpwd"
+}
+
 data "aws_db_instance" "database" {
   db_instance_identifier = "x-ops-rds"
   provider               = aws

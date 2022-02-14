@@ -25,10 +25,7 @@ For details on the AWS Services used and the deployment, please refer the Use-ca
 > Kubectl CLI </br>
 > Linux command line </br>
 
-1) Create an SSM Parameter with name "dbpwd" and store a password for database.
-2) Base64 encode db password for use in kubernetes manifest.
-3) Set the .kube directory to eks-cluster-terraform directory for helm authentication. (OR move the .kube directory from user dir)
-4) Clone the GIT repo
+1) Clone the GIT repo
 
 <h1>Installation Steps</h1> </br>
 
@@ -60,9 +57,7 @@ Deploy Configuration in EKS Cluster using helm terraform:</br>
 ```sh
 cd helm-terraform
 ```
-- Make sure .kube directory is upto date with updated kubeconfig.</br>
-- If the directory is in user home, move the updated one to this location </br>
-- Put the base64 encoded password into line number #6 (dbpwd) of values.yml
+
 ```sh
 terraform init; terraform plan; terraform apply
 ```

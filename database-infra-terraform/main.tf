@@ -37,6 +37,18 @@ module "vpc" {
 
 ######################################### RDS Postgresql 13.5 DB #################################################
 ##################################################################################################################
+resource "random_password" "dbpassword" {
+  length           = 16
+  special          = false
+}
+
+resource "aws_ssm_parameter" "db_pwd" {
+  name        = "/rds/dbpwd"
+  description = "RDS Postgres Database Password"
+  type        = "SecureString"
+  value       = base64encode(random_password.dbpassword.result)
+  overwrite   = true
+}
 
 module "db" {
   source = "terraform-aws-modules/rds/aws"
@@ -53,7 +65,7 @@ module "db" {
   storage_encrypted     = false
   name                  = "rates"
   username              = "postgres"
-  password              = data.aws_ssm_parameter.dbpassword.value
+  password              = random_password.dbpassword.result
   port                  = 5432
 
   multi_az               = true
@@ -88,7 +100,7 @@ module "db" {
 module "db_agent_userdata" {
   source      = "./modules/terraform-aws-db-agent-userdata"
   s3_bucket   = aws_s3_bucket.db.id
-  rds_pwd     = data.aws_ssm_parameter.dbpassword.value
+  rds_pwd     = random_password.dbpassword.result
   rds_address = module.db.db_instance_address
   rds_user    = "postgres"
   rds_db      = "rates"
@@ -111,7 +123,7 @@ resource "aws_instance" "db_agent" {
 ############################################################################################################
 
 resource "aws_ecr_repository" "xops" {
-  name                 = "x-ops-repo"
+  name                 = "x-ops-repo-001"
   image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {
@@ -123,7 +135,7 @@ resource "aws_ecr_repository" "xops" {
 ############################################################################################################
 
 resource "aws_s3_bucket" "db" {
-  bucket        = "x-ops-db-rates"
+  bucket_prefix = "x-ops-db-rates"
   acl           = "private"
   force_destroy = true
 
@@ -137,10 +149,6 @@ resource "aws_s3_bucket" "db" {
     noncurrent_version_expiration {
       days = 5
     }
-  }
-
-  tags = {
-    Name = "x-ops-db-rates"
   }
 }
 

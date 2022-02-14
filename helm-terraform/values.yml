@@ -3,7 +3,6 @@ nameSpace:
 
 secrets:
   name: rates-db-secret
-  dbpwd: VGd1eWFzZGluYWRtbjYzNjI=
 
 nodeService:
   name: rates-service

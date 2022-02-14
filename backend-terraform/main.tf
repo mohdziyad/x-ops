@@ -2,7 +2,7 @@
 ###############################################################################################################
 
 resource "aws_s3_bucket" "backend" {
-  bucket        = "x-ops-tf-states"
+  bucket        = "x-ops-tf-states-002"
   acl           = "private"
   force_destroy = true
 
@@ -16,17 +16,13 @@ resource "aws_s3_bucket" "backend" {
       days = 10
     }
   }
-
-  tags = {
-    Name = "x-ops-tf-states"
-  }
 }
 
 ############################################# State locking in Dynamo DB table ############################################
 ###########################################################################################################################
 
 resource "aws_dynamodb_table" "state_lock" {
-  name         = "x-ops-tf-states"
+  name         = "x-ops-tf-states-002"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
 
